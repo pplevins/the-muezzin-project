@@ -4,10 +4,10 @@ from kafka import KafkaConsumer
 
 
 class Consumer:
-    def __init__(self, topic, bootstrap_servers=None):
+    def __init__(self, topics, bootstrap_servers=None):
         if bootstrap_servers is None:
             bootstrap_servers = ['localhost:9092']
-        self.topic = topic
+        self.topic = topics
         self.bootstrap_servers = bootstrap_servers
 
     def get_consumed_messages(self):
