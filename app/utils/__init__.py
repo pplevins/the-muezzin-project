@@ -1,1 +1,1 @@
-from .data_extractor import DataExtractor
+from .metadata_extractor import MetadataExtractor
