@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 
 class ElasticSearchClient:
     def __init__(self, index_name):
-        self.es = Elasticsearch('http://elastic:9200')
+        self.es = Elasticsearch('http://localhost:9200')
         self.index_name = index_name
         self._set_mapping()
 
@@ -15,11 +15,11 @@ class ElasticSearchClient:
                 },
                 "created_at": {
                     "type": "date",
-                    "format": "yyyy-MM-dd'T'HH:mm:ssXXX"
+                    "format": "dd-MM-yyyy HH:mm:ss"
                 },
                 "last_modified": {
                     "type": "date",
-                    "format": "yyyy-MM-dd'T'HH:mm:ssXXX"
+                    "format": "dd-MM-yyyy HH:mm:ss"
                 },
                 "path": {
                     "type": "keyword"
