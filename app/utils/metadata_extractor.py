@@ -1,12 +1,15 @@
 import time
 from pathlib import Path
 
+
 class MetadataExtractor:
     """A utility class to extract metadata from binary files"""
+
     def __init__(self, dir_path):
         self._dir_path = Path(dir_path)
 
     def get_all_in_dir(self):
+        """Get all file paths in the directory as a iterator mapping object (not a list)"""
         return self._dir_path.glob("*")
 
     def extract_metadata(self, file_path):
@@ -35,8 +38,6 @@ class MetadataExtractor:
 
     def _get_filetype(self, file_path):
         return file_path.suffix
-
-
 
 
 if __name__ == "__main__":
