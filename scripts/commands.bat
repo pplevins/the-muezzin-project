@@ -4,3 +4,6 @@ docker run -d -p 9092:9092 --name broker apache/kafka:latest
 
 @REM Setting the elastic-search and kibana stack in the compose.yaml
 docker compose -f compose.yaml up -d
+
+@REM Setting MongoDB container for the binary WAV files
+docker run --name mongodb -p 27017:27017 -d mongodb/mongodb-community-server

@@ -1,9 +1,11 @@
+import os
+
 from elasticsearch import Elasticsearch
 
 
 class ElasticSearchClient:
     def __init__(self, index_name):
-        self.es = Elasticsearch('http://localhost:9200')
+        self.es = Elasticsearch(os.environ['ELASTIC_URL'])
         self.index_name = index_name
         self._set_mapping()
 

@@ -1,12 +1,13 @@
+import asyncio
 import os
 
 from app.services.processor.data_processor import DataProcessor
 
 
-def main():
+async def main():
     processor = DataProcessor(os.environ['KAFKA_BROKER'], [os.environ['KAFKA_TOPIC']])
-    processor.process()
+    await processor.process()
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
