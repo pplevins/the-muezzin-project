@@ -23,24 +23,29 @@ class MetadataExtractor:
             "file_type": self._get_filetype(file_path)
         }
 
-    def _get_filename(self, file_path):
+    @staticmethod
+    def _get_filename(file_path):
         """Extract filename from given file path"""
         return file_path.stem
 
-    def _get_filesize(self, file_path):
+    @staticmethod
+    def _get_filesize(file_path):
         """Extract file size from given file path"""
         return file_path.stat().st_size
 
-    def _get_creation_time(self, file_path):
+    @staticmethod
+    def _get_creation_time(file_path):
         """Extract creation time from given file path"""
         file_time = file_path.stat().st_ctime
         return time.strftime("%d-%m-%Y %H:%M:%S", time.localtime(file_time))
 
-    def _get_last_modified(self, file_path):
+    @staticmethod
+    def _get_last_modified(file_path):
         """Extract last modified time from given file path"""
         file_time = file_path.stat().st_mtime
         return time.strftime("%d-%m-%Y %H:%M:%S", time.localtime(file_time))
 
-    def _get_filetype(self, file_path):
+    @staticmethod
+    def _get_filetype(file_path):
         """Extract file type from given file path"""
         return file_path.suffix

@@ -5,9 +5,6 @@ from datetime import datetime, timezone
 from elasticsearch import Elasticsearch
 
 
-# TODO: Change the main elastic client to use both for the podcasts and logs indices,
-#       without the need of extra es class.
-
 class ESHandler(logging.Handler):
     def __init__(self, index_name):
         super().__init__()
