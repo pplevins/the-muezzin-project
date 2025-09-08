@@ -38,6 +38,9 @@ class ElasticSearchClient:
                 },
                 "file_type": {
                     "type": "keyword"
+                },
+                "transcribed_text": {
+                    "type": "text"
                 }
             }
         }
