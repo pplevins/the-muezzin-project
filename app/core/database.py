@@ -36,6 +36,7 @@ class Database:
 
     @classmethod
     def get_fs(cls):
+        """A class method that returns a singleton database GridFS client."""
         if cls._fs is None:
             cls.get_client()
         return cls._fs

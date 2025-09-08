@@ -4,12 +4,16 @@ from elasticsearch import Elasticsearch
 
 
 class ElasticSearchClient:
+    """An ElasticSearch client model class"""
+
     def __init__(self, index_name):
+        """Constructor"""
         self.es = Elasticsearch(os.environ['ELASTIC_URL'])
         self.index_name = index_name
         self._set_mapping()
 
     def _set_mapping(self):
+        """Setting the podcasts schema for the index."""
         mappings = {
             "properties": {
                 "unique_id": {
@@ -44,6 +48,7 @@ class ElasticSearchClient:
         )
 
     def load_to_es(self, document):
+        """Indexing one document."""
         self.es.index(
             index=self.index_name,
             id=document['unique_id'],

@@ -2,15 +2,19 @@ from app.core import Database
 
 
 class PodcastsDal:
+    """Data Access Layer for the MongoDB database."""
+
     def __init__(self, db: Database):
         """Constructor."""
         self.db = db
 
     async def list(self, collection_name):
         """List all podcasts in the database."""
+        # TODO: Add support for GridFS retrieval.
         return await self.db.get_db_collection(collection_name).find().to_list()
 
     async def insert_document(self, collection_name, document):
+        """Insert a document into the database."""
         with open(document["path"], "rb") as file:
             file_id = await self.db.get_fs().put(file, filename=document["unique_id"], content_type="audio/wav")
         result = await self.db.get_db_collection(collection_name).insert_one(
