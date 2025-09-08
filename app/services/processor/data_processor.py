@@ -21,24 +21,30 @@ class DataProcessor:
         return msg
 
     async def _insert_file_to_db(self, msg):
-        await self._dal.insert_document("podcasts", msg)
+        try:
+            await self._dal.insert_document("podcasts", msg)
+            self._logger.info(f"Inserted file id {msg["unique_id"]} to MongoDB.")
+        except PyMongoError as e:
+            self._logger.error(f"Failed to insert message {msg["unique_id"]} to MongoDB: {e}")
+        except Exception as e:
+            self._logger.error(f"An unexpected error occurred while processing massage {msg["unique_id"]}: {e}")
+
+    def _insert_msg_to_es(self, msg):
+        try:
+            self._es_client.load_to_es(msg)
+            self._logger.info(f"Inserted message id {msg["unique_id"]} to Elastic.")
+        except ApiError as e:
+            self._logger.error(f"Failed to insert message {msg["unique_id"]} to Elastic: {e}")
+        except Exception as e:
+            self._logger.error(f"An unexpected error occurred while processing massage {msg["unique_id"]}: {e}")
 
     async def process(self):
         try:
             for msg in self._consumer.get_consumed_messages():
-                try:
-                    msg_dict = self._add_unique_id(msg.value)
-                    self._es_client.load_to_es(msg_dict)
-                    self._logger.info(f"Inserted message id {msg_dict["unique_id"]} to Elastic.")
-                    await self._insert_file_to_db(msg_dict)
-                    self._logger.info(f"Inserted file id {msg_dict["unique_id"]} to MongoDB.")
-
-                except ApiError as e:
-                    self._logger.error(f"Failed to insert message {msg.value} to Elastic: {e}")
-                except PyMongoError as e:
-                    self._logger.error(f"Failed to insert message {msg.value} to MongoDB: {e}")
-                except Exception as e:
-                    self._logger.error(f"An unexpected error occurred while processing massage {msg.value}: {e}")
+                self._logger.info(f"Processing consumed message file {msg.value['name']}")
+                msg_dict = self._add_unique_id(msg.value)
+                self._insert_msg_to_es(msg_dict)
+                await self._insert_file_to_db(msg_dict)
 
         except NoBrokersAvailable as e:
             self._logger.error(f"Kafka connection error: {e}")
