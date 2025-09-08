@@ -17,7 +17,8 @@ the-muezzin-project/
 │ │
 │ ├── models/               # The client models used for the project.
 │ │ ├── elastic_search/         # The ElasticSearch client model.
-│ │ └── kafka/                  # The Kafka client models (Producer & Consumer).
+│ │ ├── kafka/                  # The Kafka client models (Producer & Consumer).
+│ │ └── elastic_logging/        # The ElasticSearch logger models (Logger & ESHandler).
 │ │
 │ ├── services/
 │ │ ├── publisher/          # The Kafka publisher service.
