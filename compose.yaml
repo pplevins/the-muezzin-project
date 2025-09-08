@@ -1,4 +1,35 @@
 services:
+  publisher:
+    # Just temporary, not final!!!
+    build:
+      context: .
+      dockerfile: app/services/publisher/Dockerfile
+    environment:
+      ELASTIC_URL: http://elastic:9200
+      FILES_DIR: C:\\podcasts # This is not really true
+      KAFKA_BROKER: kafka:9093
+      KAFKA_TOPIC: podcasts
+    depends_on:
+      - kafka
+      - elastic
+    restart: unless-stopped
+
+  processor:
+    # Just temporary, not final!!!
+    build:
+      context: .
+      dockerfile: app/services/processor/Dockerfile
+    environment:
+      ELASTIC_URL: http://elastic:9200
+      KAFKA_BROKER: kafka:9093
+      KAFKA_TOPIC: podcasts
+      MONGODB_DATABASE: podcasts
+      MONGODB_URL: mongodb://root:example@mongo-db:27017/
+    depends_on:
+      - kafka
+      - elastic
+    restart: unless-stopped
+
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
     ports:
@@ -19,3 +50,28 @@ services:
       - "5601:5601"
     depends_on:
       - elastic
+
+  kafka:
+    image: apache/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+
+  mongo-db:
+    image: mongo:6.0
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+volumes:
+  mongo-data:
+    driver: local

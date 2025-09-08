@@ -7,3 +7,6 @@ docker compose -f compose.yaml up -d
 
 @REM Setting MongoDB container for the binary WAV files
 docker run --name mongodb -p 27017:27017 -d mongodb/mongodb-community-server
+
+@REM Getting the project requirements (navigate to the project directory first)
+pip freeze > requirements.txt
