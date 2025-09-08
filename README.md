@@ -30,7 +30,7 @@ the-muezzin-project/
 │ │
 │ └── tests/                # Test code to run the services locally
 ├── scripts/                # Docker & CLI command scripts used for the project.
-├── compose.yaml            # Docker compose for the ElasticSearch stack (for now)
+├── compose.yaml            # Docker compose for the ElasticSearch stack (elastic & kibana for now)
 └── README.md               # Project documentation
 ```
 
