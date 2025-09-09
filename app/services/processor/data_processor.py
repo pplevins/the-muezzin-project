@@ -54,7 +54,7 @@ class DataProcessor:
         """Processes messages from the consumer."""
         try:
             for msg in self._consumer.get_consumed_messages():
-                self._logger.info(f"Processing consumed message file {msg.value['name']}")
+                self._logger.info(f"Processing consumed message file {msg.value['name']} for procession")
                 msg_dict = self._add_unique_id(msg.value)
                 self._insert_msg_to_es(msg_dict)
                 await self._insert_file_to_db(msg_dict)
