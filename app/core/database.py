@@ -24,7 +24,7 @@ class Database:
                 mongodb_url,
                 server_api=pymongo.server_api.ServerApi(version="1", strict=True, deprecation_errors=True))
             cls._db = cls._client[os.environ["MONGODB_DATABASE"]]
-            cls._fs = AsyncGridFS(database=cls._db)
+            cls._fs = AsyncGridFS(database=cls._db)  # TODO: Add collection parameters.
         return cls._client
 
     @classmethod
