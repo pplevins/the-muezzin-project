@@ -1,0 +1,2 @@
+class DataClassifier:
+    pass
