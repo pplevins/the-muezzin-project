@@ -71,3 +71,14 @@ the-muezzin-project/
 - **Future Improvements:**
     - Containerization and support for remote file access.
     - Minor improvements, detailed in the **TODO** comments.
+
+### Breaking Mission - Logger
+
+- **Requirements** - Implementing a logging process for every meaningful action in the code. The logs should be
+  different: `INFO` for successful operation and `ERROR` for a failure.
+- **Current implementation** - Using the given logger implementation and the ESHandler (with a few modifications), and
+  calling the logger for every operation.
+- **Rationale** - Logs are important for debugging and error handling, so the implementation should be integrated within
+  the error handling process. every try-except should be logged.
+- **Tech & Library Used:**
+    1. `logging` module in python, and ESHandler implemented using the handler base class.
