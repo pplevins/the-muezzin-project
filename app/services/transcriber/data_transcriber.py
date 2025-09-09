@@ -34,8 +34,22 @@ class DataTranscriber:
             self._logger.info(f"Writing file to disk in: {file_path}")
             with open(file_path, 'w+b') as file:
                 file.write(data)
+            return file_path
         except Exception as e:
             self._logger.error(f"Failed to write file: {e}")
+
+    def _transcribe_file(self, file_path):
+        try:
+            self._logger.info(f"Transcribing file in: {file_path}")
+            result, info = self._transcriber.transcribe_audio(file_path)
+            result_str = ""
+            for segment in result:
+                result_str += segment.text
+            self._logger.info(
+                f"file in {file_path} transcribed successfully! Language detected: {info.language}, probability: {info.language_probability:.2%}")
+            return result_str, info
+        except Exception as e:
+            self._logger.error(f"Failed to transcribe file in {file_path}: {e}")
 
     async def get_and_transcribe_data(self):
         """Transcribe the data consumed from Kafka."""
@@ -46,4 +60,5 @@ class DataTranscriber:
             if file_data is None:
                 self._logger.error(f'No data found for file id {unique_id}')
                 continue
-            self._write_file_locally(unique_id, file_data)
+            file_path = self._write_file_locally(unique_id, file_data)
+            transcription, info = self._transcribe_file(file_path)
