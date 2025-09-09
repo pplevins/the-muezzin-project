@@ -18,6 +18,12 @@ class PodcastsDal:
         with open(document["path"], "rb") as file:
             file_id = await self.db.get_fs().put(file, filename=document["unique_id"], content_type="audio/wav")
         result = await self.db.get_db_collection(collection_name).insert_one(
-            {"unique_id": document["unique_id"], "gridfs_id": file_id})
+            {"unique_id": document["unique_id"],
+             "gridfs_id": file_id})  # TODO: Probably unnecessary, because the use of GridFS.
         document['podcast_id'] = str(result.inserted_id)
         return document
+
+    async def find_document(self, podcast_id):
+        """Find a document in the database, returned as bytestream."""
+        document = await self.db.get_fs().find_one({'filename': podcast_id})
+        return await document.read()
