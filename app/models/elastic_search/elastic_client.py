@@ -41,6 +41,12 @@ class ElasticSearchClient:
                 },
                 "transcribed_text": {
                     "type": "text"
+                },
+                "text_language": {
+                    "type": "keyword"
+                },
+                "language_probability": {
+                    "type": "float"
                 }
             }
         }
@@ -56,3 +62,11 @@ class ElasticSearchClient:
             index=self.index_name,
             id=document['unique_id'],
             document=document)
+
+    def update_document(self, document_id, document):
+        """Update the document with new data."""
+        self.es.update(
+            index=self.index_name,
+            id=document_id,
+            doc=document
+        )

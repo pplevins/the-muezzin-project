@@ -1,5 +1,6 @@
 import os
 
+from elasticsearch import ApiError
 from pymongo.errors import PyMongoError
 
 from app.core import Database
@@ -51,6 +52,20 @@ class DataTranscriber:
         except Exception as e:
             self._logger.error(f"Failed to transcribe file in {file_path}: {e}")
 
+    def _update_transcription_to_es(self, file_id, transcription, info):
+        try:
+            document = {
+                "transcribed_text": transcription,
+                "text_language": info.language,
+                "language_probability": info.language_probability
+            }
+            self._es_client.update_document(file_id, document)
+            self._logger.info(f"Updated transcription to Elastic fo file id: {file_id}")
+        except ApiError as e:
+            self._logger.error(f"Failed to update message {file_id} to Elastic: {e}")
+        except Exception as e:
+            self._logger.error(f"An unexpected error occurred while processing massage {file_id}: {e}")
+
     async def get_and_transcribe_data(self):
         """Transcribe the data consumed from Kafka."""
         for msg in self._consumer.get_consumed_messages():
@@ -62,3 +77,4 @@ class DataTranscriber:
                 continue
             file_path = self._write_file_locally(unique_id, file_data)
             transcription, info = self._transcribe_file(file_path)
+            self._update_transcription_to_es(unique_id, transcription, info)
