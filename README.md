@@ -51,3 +51,23 @@ the-muezzin-project/
     2. `pathlib` for extracting the metadata from a given file path.
 - **Future Improvements:**
     - Containerization and support for remote file access.
+
+### Stage 2 - The Data Processor Service
+
+- **Requirements** - Creating a service that consume the published data from the **Kafka** topic, calculating a unique
+  ID based on the metadata, then store the binary file in **MongoDB** and indexes the details in **ElasticSearch**.
+  Also, adding **Kibana** for data visualization.
+- **Current implementation** - A Kafka consumer that waiting for massages, and for every massage consumed reads the
+  local file, calculates its ID, and then stores the data in the DB and Elastic.
+- **Rationale** - The process data need to be consistent, so it's important to set a unique ID and store both the binary
+  and the metadata under the same ID. Also, large files storage need to be supported, and the ES index should be mapped
+  properly.
+- **Tech & Library Used:**
+    1. `kafka` docker container and `kafka-python` for consuming the data in the pipline.
+    2. `hashlib` for hash and create unique ID based of the passed data parameters.
+    3. `AsyncMongoClient` and `AsyncGridFS` for asynchronous database storage operation and handling large binary files.
+    4. `elasticsearch` client for indexing the metadata and preparing the mapped index for future service in the
+       pipline.
+- **Future Improvements:**
+    - Containerization and support for remote file access.
+    - Minor improvements, detailed in the **TODO** comments.
