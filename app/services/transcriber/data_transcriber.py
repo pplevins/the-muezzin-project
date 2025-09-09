@@ -9,7 +9,7 @@ class DataTranscriber:
     def __init__(self, kafka_url, kafka_topic, index_name):
         """Constructor."""
         self._consumer = Consumer(kafka_url, kafka_topic)
-        self._file_path = '/tmp/muezzin-data'
+        self._file_path = '/tmp/muezzin-data'  # TODO: Remember to delete afterwards
         os.makedirs(self._file_path, exist_ok=True)
         self._es_client = ElasticSearchClient(index_name)
         self._dal = PodcastsDal(Database())
