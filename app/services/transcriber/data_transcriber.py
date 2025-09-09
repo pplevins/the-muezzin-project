@@ -1,6 +1,7 @@
 import os
 
 from elasticsearch import ApiError
+from kafka.errors import NoBrokersAvailable, KafkaError
 from pymongo.errors import PyMongoError
 
 from app.core import Database
@@ -10,6 +11,8 @@ from app.utils import AudioTranscriber
 
 
 class DataTranscriber:
+    """The Data transcription service class."""
+
     def __init__(self, kafka_url, kafka_topic, index_name):
         """Constructor."""
         self._consumer = Consumer(kafka_topic, kafka_url)
@@ -21,6 +24,11 @@ class DataTranscriber:
         self._transcriber = AudioTranscriber()
 
     async def _get_file_from_db(self, file_id):
+        """
+        Retrieve a file from the GridFS database according to the given ID.
+
+        :returns: File data as bytestream.
+        """
         try:
             file_data = await self._dal.find_document(file_id)
             return file_data
@@ -30,6 +38,7 @@ class DataTranscriber:
             self._logger.error(f"An unexpected error occurred while processing document {file_id}: {e}")
 
     def _write_file_locally(self, file_id, data):
+        """Write a file locally from a bytestream data."""
         try:
             file_path = os.path.join(self._dir_path + '/' + file_id + '.wav')
             self._logger.info(f"Writing file to disk in: {file_path}")
@@ -40,6 +49,7 @@ class DataTranscriber:
             self._logger.error(f"Failed to write file: {e}")
 
     def _transcribe_file(self, file_path):
+        """Transcribe a file."""
         try:
             self._logger.info(f"Transcribing file in: {file_path}")
             result, info = self._transcriber.transcribe_audio(file_path)
@@ -53,6 +63,7 @@ class DataTranscriber:
             self._logger.error(f"Failed to transcribe file in {file_path}: {e}")
 
     def _update_transcription_to_es(self, file_id, transcription, info):
+        """Updates the transcription to ElasticSearch."""
         try:
             document = {
                 "transcribed_text": transcription,
@@ -68,13 +79,21 @@ class DataTranscriber:
 
     async def get_and_transcribe_data(self):
         """Transcribe the data consumed from Kafka."""
-        for msg in self._consumer.get_consumed_messages():
-            unique_id = msg.value['unique_id']
-            self._logger.info(f"Processing consumed message file {unique_id} for transcription")
-            file_data = await self._get_file_from_db(unique_id)
-            if file_data is None:
-                self._logger.error(f'No data found for file id {unique_id}')
-                continue
-            file_path = self._write_file_locally(unique_id, file_data)
-            transcription, info = self._transcribe_file(file_path)
-            self._update_transcription_to_es(unique_id, transcription, info)
+        try:
+            for msg in self._consumer.get_consumed_messages():
+                unique_id = msg.value['unique_id']
+                self._logger.info(f"Processing consumed message file {unique_id} for transcription")
+                file_data = await self._get_file_from_db(unique_id)
+                if file_data is None:
+                    self._logger.error(f'No data found for file id {unique_id}')
+                    continue
+                file_path = self._write_file_locally(unique_id, file_data)
+                transcription, info = self._transcribe_file(file_path)
+                self._update_transcription_to_es(unique_id, transcription, info)
+
+        except NoBrokersAvailable as e:
+            self._logger.error(f"Kafka connection error: {e}")
+        except KafkaError as e:
+            self._logger.error(f"Kafka error during consumption: {e}")
+        except Exception as e:
+            self._logger.error(f"Unexpected error: {e}")
