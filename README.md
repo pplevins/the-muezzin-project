@@ -82,3 +82,17 @@ the-muezzin-project/
   the error handling process. every try-except should be logged.
 - **Tech & Library Used:**
     1. `logging` module in python, and ESHandler implemented using the handler base class.
+
+### Stage 3 - The Data Transcriber Service
+
+- **Requirements** - Implementing a Speech-to-Text service for our data pipline, where every WAV file will be
+  transcribed and the text will be saved in the ElasticSearch index.
+- **Current implementation** -
+- **Rationale** -
+- **Tech & Library Used:**
+    1.
+    2.
+
+- **Future Improvements:**
+    - Containerization and support for remote file access.
+    - Minor improvements, detailed in the **TODO** comments.
