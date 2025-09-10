@@ -10,6 +10,7 @@ class ESHandler(logging.Handler):
         super().__init__()
         self.es = Elasticsearch(os.environ['ELASTIC_URL'])
         self.index = index_name
+        self.es.indices.delete(index=self.index, ignore_unavailable=True)
 
     def emit(self, record):
         try:

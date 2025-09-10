@@ -6,7 +6,7 @@ from pymongo.errors import PyMongoError
 
 from app.core import Database
 from app.dal import PodcastsDal
-from app.models import Consumer, ElasticSearchClient, Logger
+from app.models import Consumer, ElasticSearchClient, Logger, Producer
 from app.utils import AudioTranscriber
 
 
@@ -15,6 +15,7 @@ class DataTranscriber:
 
     def __init__(self, kafka_url, kafka_topic, index_name):
         """Constructor."""
+        self._producer = Producer(kafka_url)
         self._consumer = Consumer(kafka_topic, kafka_url)
         self._dir_path = '/tmp/muezzin-data'  # TODO: Remember to delete afterwards
         os.makedirs(self._dir_path, exist_ok=True)
@@ -77,6 +78,11 @@ class DataTranscriber:
         except Exception as e:
             self._logger.error(f"An unexpected error occurred while processing massage {file_id}: {e}")
 
+    def _publish_message_to_classification(self, msg):
+        """Publishes a message to the Kafka broker for transcription."""
+        self._producer.publish_massage("classification", msg)  # TODO: make the topic without hardcoded values maybe.
+        self._logger.info(f"Published message id {msg["unique_id"]} to Kafka for classification.")
+
     async def get_and_transcribe_data(self):
         """Transcribe the data consumed from Kafka."""
         try:
@@ -90,6 +96,7 @@ class DataTranscriber:
                 file_path = self._write_file_locally(unique_id, file_data)
                 transcription, info = self._transcribe_file(file_path)
                 self._update_transcription_to_es(unique_id, transcription, info)
+                self._publish_message_to_classification({"unique_id": unique_id, "transcription": transcription})
 
         except NoBrokersAvailable as e:
             self._logger.error(f"Kafka connection error: {e}")
