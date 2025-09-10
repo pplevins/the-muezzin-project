@@ -29,11 +29,16 @@ the-muezzin-project/
 │ │
 │ ├── services/
 │ │ ├── publisher/          # The Kafka publisher service.
-│ │ └── processor/          # The data processor and storage service.
+│ │ ├── processor/          # The data processor and storage service.
+│ │ ├── transcriber/        # The data transcriber service.
+│ │ └── classifier/         # The text BDS classifier service.
 │ │
 │ ├── utils/                # A utility package for necessary code procedures.
 │ │ ├── data_hash.py            # hashlib for creating unique str id.
-│ │ └── metadata_extractor.py   # pathlib for retrieving file metadata.
+│ │ ├── metadata_extractor.py   # pathlib for retrieving file metadata.
+│ │ ├── audio_transcriber.py    # faster-whisper model for audio STT.
+│ │ ├── words_decryptor.py      # base64 for decrypting the threatning words.
+│ │ └── text_classifier.py      # self made utility class with the TF algorithm.
 │ │
 │ └── tests/                # Test code to run the services locally
 ├── scripts/                # Docker & CLI command scripts used for the project.
