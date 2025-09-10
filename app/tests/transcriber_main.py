@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-from app.services import DataTranscriber
+from transcriber import DataTranscriber
 
 
 async def main():

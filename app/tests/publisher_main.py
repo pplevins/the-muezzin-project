@@ -1,6 +1,6 @@
 import os
 
-from app.services import DataPublisher
+from publisher import DataPublisher
 
 
 def main():

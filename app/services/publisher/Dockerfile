@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 COPY app/services/publisher/data_publisher.py ./publisher/data_publisher.py
 COPY app/services/publisher/__init__.py ./publisher/__init__.py
-COPY app/utils ./utils
+COPY app/utils/metadata_extractor.py ./utils/metadata_extractor.py
 COPY app/models ./models
 COPY app/tests/publisher_main.py publisher_main.py
 COPY requirements.txt requirements.txt
