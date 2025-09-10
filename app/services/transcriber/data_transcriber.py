@@ -79,7 +79,7 @@ class DataTranscriber:
             self._logger.error(f"An unexpected error occurred while processing massage {file_id}: {e}")
 
     def _publish_message_to_classification(self, msg):
-        """Publishes a message to the Kafka broker for transcription."""
+        """Publishes a message to the Kafka broker for classification."""
         self._producer.publish_massage("classification", msg)  # TODO: make the topic without hardcoded values maybe.
         self._logger.info(f"Published message id {msg["unique_id"]} to Kafka for classification.")
 
