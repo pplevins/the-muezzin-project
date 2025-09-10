@@ -1,8 +1,8 @@
 from elasticsearch import ApiError
 from kafka.errors import NoBrokersAvailable, KafkaError
 
-from app.models import Consumer, ElasticSearchClient, Logger
-from app.utils import TextClassifier
+from models import Consumer, ElasticSearchClient, Logger
+from utils.text_classifier import TextClassifier
 
 
 class DataClassifier:

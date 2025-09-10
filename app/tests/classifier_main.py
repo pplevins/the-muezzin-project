@@ -1,6 +1,6 @@
 import os
 
-from app.services import DataClassifier
+from classifier import DataClassifier
 
 
 def main():

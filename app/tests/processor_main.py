@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-from app.services import DataProcessor
+from processor import DataProcessor
 
 
 async def main():

@@ -1,4 +1,4 @@
-from app.core import Database
+from core import Database
 
 
 class PodcastsDal:

@@ -1,7 +1,7 @@
 from kafka.errors import NoBrokersAvailable, KafkaError
 
-from app.models import Producer, Logger
-from app.utils import MetadataExtractor
+from models import Producer, Logger
+from utils.metadata_extractor import MetadataExtractor
 
 
 class DataPublisher:
@@ -15,6 +15,7 @@ class DataPublisher:
 
     def extract_and_publish(self, topic):
         """Extract the metadata from all the files, and publish it to a given topic in Kafka."""
+        self._logger.info("Extracting metadata")
         for file in self._extractor.get_all_in_dir():
             try:
                 metadata = self._extractor.extract_metadata(file)

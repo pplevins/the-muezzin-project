@@ -1,30 +1,62 @@
 services:
   publisher:
-    # Just temporary, not final!!!
     build:
       context: .
       dockerfile: app/services/publisher/Dockerfile
+    volumes:
+      - muezzin-data:/app/data:rw
     environment:
       ELASTIC_URL: http://elastic:9200
-      FILES_DIR: C:\\podcasts # This is not really true
+      FILES_DIR: /app/data
       KAFKA_BROKER: kafka:9093
       KAFKA_TOPIC: podcasts
     depends_on:
       - kafka
       - elastic
-    restart: unless-stopped
+      - processor
 
   processor:
-    # Just temporary, not final!!!
     build:
       context: .
       dockerfile: app/services/processor/Dockerfile
+    volumes:
+      - muezzin-data:/app/data:rw
     environment:
       ELASTIC_URL: http://elastic:9200
       KAFKA_BROKER: kafka:9093
       KAFKA_TOPIC: podcasts
       MONGODB_DATABASE: podcasts
-      MONGODB_URL: mongodb://root:example@mongo-db:27017/
+      MONGODB_URL: mongodb://root:example@mongodb-database:27017/
+    depends_on:
+      - kafka
+      - elastic
+      - mongodb-database
+      - transcriber
+    restart: unless-stopped
+
+  transcriber:
+    build:
+      context: .
+      dockerfile: app/services/transcriber/Dockerfile
+    environment:
+      ELASTIC_URL: http://elastic:9200
+      KAFKA_BROKER: kafka:9093
+      MONGODB_DATABASE: podcasts
+      MONGODB_URL: mongodb://root:example@mongodb-database:27017/
+    depends_on:
+      - kafka
+      - elastic
+      - mongodb-database
+      - classifier
+    restart: unless-stopped
+
+  classifier:
+    build:
+      context: .
+      dockerfile: app/services/classifier/Dockerfile
+    environment:
+      ELASTIC_URL: http://elastic:9200
+      KAFKA_BROKER: kafka:9093
     depends_on:
       - kafka
       - elastic
@@ -60,10 +92,20 @@ services:
       KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
 
-  mongo-db:
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  mongodb-database:
     image: mongo:6.0
-    container_name: mongo-db
+    container_name: mongodb-database
     ports:
       - "27017:27017"
     volumes:
@@ -75,3 +117,4 @@ services:
 volumes:
   mongo-data:
     driver: local
+  muezzin-data:

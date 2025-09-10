@@ -4,10 +4,10 @@ from elasticsearch import ApiError
 from kafka.errors import NoBrokersAvailable, KafkaError
 from pymongo.errors import PyMongoError
 
-from app.core import Database
-from app.dal import PodcastsDal
-from app.models import Consumer, ElasticSearchClient, Logger, Producer
-from app.utils import AudioTranscriber
+from core import Database
+from dal import PodcastsDal
+from models import Consumer, ElasticSearchClient, Logger, Producer
+from utils.audio_transcriber import AudioTranscriber
 
 
 class DataTranscriber:

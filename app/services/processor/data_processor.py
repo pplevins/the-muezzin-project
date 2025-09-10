@@ -1,11 +1,10 @@
+from core import Database
+from dal import PodcastsDal
 from elasticsearch import ApiError
 from kafka.errors import NoBrokersAvailable, KafkaError
+from models import Consumer, ElasticSearchClient, Logger, Producer
 from pymongo.errors import PyMongoError
-
-from app.core import Database
-from app.dal import PodcastsDal
-from app.models import Consumer, ElasticSearchClient, Logger, Producer
-from app.utils import DataHash
+from utils.data_hash import DataHash
 
 
 class DataProcessor:
