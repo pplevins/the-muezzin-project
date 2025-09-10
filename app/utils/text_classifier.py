@@ -42,10 +42,10 @@ class TextClassifier:
 
         return danger_score
 
-    def _is_score_bds(self, score, threshold=0.2):
+    def _is_score_bds(self, score, threshold=0.1):
         return True if score > threshold else False
 
-    def _classify_score_threat_level(self, score, threshold=0.2, high_threshold=0.4):
+    def _classify_score_threat_level(self, score, threshold=0.1, high_threshold=0.2):
         return "none" if score < threshold else "high" if score > high_threshold else "medium"
 
     def classify_text(self, text):

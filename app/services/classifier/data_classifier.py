@@ -29,6 +29,7 @@ class DataClassifier:
                 unique_id = msg.value['unique_id']
                 self._logger.info(f"Processing consumed message file {unique_id} for classification")
                 text = msg.value['transcription']
+                print(text)
                 classification_result = self._classifier.classify_text(text)
                 self._logger.info(
                     f"Classification result for file id {unique_id}: bds_precent: {classification_result['bds_precent']:.2%}, is_bds: {classification_result['is_bds']}, bds_threat_level: {classification_result['bds_threat_level']}")
