@@ -159,3 +159,57 @@ the-muezzin-project/
 - **Future Improvements:**
     - Containerization and support for remote file access.
     - Minor improvements, detailed in the TODO comments.
+
+## Mapping in the ElasticSearch
+
+```json
+{
+  "podcasts": {
+    "mappings": {
+      "properties": {
+        "bds_precent": {
+          "type": "float"
+        },
+        "bds_threat_level": {
+          "type": "keyword"
+        },
+        "created_at": {
+          "type": "date",
+          "format": "dd-MM-yyyy HH:mm:ss"
+        },
+        "file_type": {
+          "type": "keyword"
+        },
+        "is_bds": {
+          "type": "boolean"
+        },
+        "language_probability": {
+          "type": "float"
+        },
+        "last_modified": {
+          "type": "date",
+          "format": "dd-MM-yyyy HH:mm:ss"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "path": {
+          "type": "keyword"
+        },
+        "size_in_bytes": {
+          "type": "long"
+        },
+        "text_language": {
+          "type": "keyword"
+        },
+        "transcribed_text": {
+          "type": "text"
+        },
+        "unique_id": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
+```
