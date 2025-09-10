@@ -47,6 +47,15 @@ class ElasticSearchClient:
                 },
                 "language_probability": {
                     "type": "float"
+                },
+                "bds_precent": {
+                    "type": "float"
+                },
+                "is_bds": {
+                    "type": "boolean"
+                },
+                "bds_threat_level": {
+                    "type": "keyword"
                 }
             }
         }
