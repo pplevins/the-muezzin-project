@@ -113,17 +113,16 @@ the-muezzin-project/
 
 - **Requirements** - Implementing a Speech-to-Text service for our data pipline, where every WAV file will be
   transcribed and the text will be saved in the ElasticSearch index.
-- **Current implementation** - The processor service publishes the file Id to a new Kafka topic to flag the transcriber
+- **Current implementation** - The processor service publishes the file ID to a new Kafka topic to flag the transcriber
   the files ready for transcription. The transcriber retrieves the Wav file from the MongoDB, transcribes it, and
   updates the text to the ElasticSearch index when finished.
 - **Rationale** - The transcription process takes a long run time to transcribe the audio to text. So, it will be much
   efficient to separate this logic from the core processor, and index the metadata and store the raw audio first for
   access. Then, one file after another, the transcriber will transcribe the audio and updates its text when the
-  transcription is finised.
+  transcription is finished.
 - **Tech & Library Used:**
-    1. Faster-whisper model for efficient and precise Speech-to-Text transcription, and also for retrieveing the
-       detected
-       language in the process.
+    1. `faster-whisper` model for efficient and precise Speech-to-Text transcription, and also for retrieving the
+       detected language in the process.
 - **Future Improvements:**
     - Containerization and support for remote file access.
     - Minor improvements, detailed in the TODO comments.
