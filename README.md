@@ -7,6 +7,13 @@ The project is using **Kafka** data stream to send the retrieved files to proces
 
 ---
 
+## Kibana Visualization
+
+![Image Alt text](kibana-images/Kibana1.png "Project Preview1")
+![Image Alt text](kibana-images/Kibana2.png "Project Preview2")
+
+---
+
 ## Directory Structure
 
 ```
