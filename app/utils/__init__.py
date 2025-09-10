@@ -1,3 +1,4 @@
+from .text_classifier import TextClassifier
 from .audio_transcriber import AudioTranscriber
 from .binary_file_handler import BinaryFileHandler
 from .data_hash import DataHash
